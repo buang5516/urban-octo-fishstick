@@ -3134,7 +3134,7 @@ function Library:keybind(options)
 		Position = UDim2.new(1, -20,0, 16),
 		Size = UDim2.new(0, 50,0, 20),
 		TextSize = 12,
-		Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
+		Text = (_key and tostring(_key):upper()) or "?"
 	}):round(5):stroke("Tertiary")
 
 	keybindDisplay.Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20)
@@ -3174,7 +3174,7 @@ function Library:keybind(options)
 						_key = key.KeyCode.Name
 						options.KeyChanged(key.KeyCode.Name);
 					end
-					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
+					keybindDisplay.Text = (_key and tostring(_key):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
 					listening = false
 				end
@@ -3201,7 +3201,7 @@ function Library:keybind(options)
 			options.Keybind = keycode
 			_key = keycode
 		end
-		keybindDisplay.Text = (options.Keybind and tostring(options.Keybind):upper()) or "?"
+		keybindDisplay.Text = (_key and tostring(_key):upper()) or "?"
 		keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
 	end
 
