@@ -649,7 +649,7 @@ function Library:create(options)
 		TextSize = 14,
 		Text = "Hide Script",
 		Position = UDim2.new(0, 0, 0, 0),
-		TextXAlignment = Enum.TextXAlignment.Left,
+		TextXAlignment = Enum.TextXAlignment.Center,
 		Size = UDim2.new(0, 100, 0, 40),
 		Font = Enum.Font.SourceSans,
 		TextTruncate = Enum.TextTruncate.AtEnd
@@ -3151,7 +3151,7 @@ function Library:keybind(options)
 				if key.UserInputType == Enum.UserInputType.Keyboard then
 					if key.KeyCode ~= Enum.KeyCode.Escape then
 						options.Keybind = key.KeyCode
-						options.KeyChanged(key.KeyCode)
+						options.KeyChanged(tostring(key.KeyCode))
 					end
 					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
