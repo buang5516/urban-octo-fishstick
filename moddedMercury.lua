@@ -3162,7 +3162,7 @@ function Library:keybind(options)
 					if key.KeyCode ~= Enum.KeyCode.Escape then
 						options.Keybind = key.KeyCode
 							local _keyCode = key.KeyCode
-						options.KeyChanged(_keyCode);
+						options.KeyChanged(tostring(_keyCode));
 					end
 					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
