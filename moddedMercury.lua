@@ -453,6 +453,8 @@ function Library:create(options)
 		Name = "Mercury",
 		Size = UDim2.fromOffset(600, 400),
 		Theme = self.Themes[settings.Theme],
+		ToggleKey = Enum.KeyCode.Delete,
+		DefaultToggled = true,
 		Link = "https://github.com/deeeity/mercury-lib"
 	}, options)
 
@@ -1032,19 +1034,12 @@ function Library:create(options)
 	settingsTab:keybind{
 		Name = "Toggle Key",
 		Description = "Key to show/hide the UI.",
-		Keybind = Enum.KeyCode.Delete,
+		Keybind = options.ToggleKey or Enum.KeyCode.Delete,
 		Callback = function()
 			self.Toggled = not self.Toggled
 			Library:show(self.Toggled)
 		end,
 	}
-
-	if getgenv()._autoShow ~= nil then 
-		if not getgenv()._autoShow then 
-			self.Toggled = false
-			Library:show(false)
-		end
-	end
 
 	settingsTab:toggle{
 		Name = "Lock Dragging",
@@ -1077,6 +1072,14 @@ function Library:create(options)
     creditsTab:credit{Name = "Buang #5516", Description = "Modded UI Library Developer", Discord = "Buang#5516"}
 	creditsTab:credit{Name = "Abstract", Description = "UI Library Developer"}
 	creditsTab:credit{Name = "Deity", Description = "UI Library Developer"}
+
+	if options["DefaultToggled"] ~= nil and options["DefaultToggled"] == false then
+		local s, e = pcall(function()
+				self.Toggled = false;
+				Library:show(false);
+			end)
+		if not s then warn(e) end
+	end
 
 
 	return mt
@@ -3620,6 +3623,14 @@ function Library:label(options)
 
 	return methods
 end
+
+	if getgenv()._autoShow ~= nil then 
+		if not getgenv()._autoShow then 
+		pcall(function()
+			Library:show(false)
+			end)
+		end
+	end
 
 return setmetatable(Library, {
 	__index = function(_, i)
