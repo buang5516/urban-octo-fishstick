@@ -3087,6 +3087,16 @@ function Library:keybind(options)
 		KeyChanged = function(key) end,
 	}, options)
 
+	local _key
+
+	if options.Keybind ~= nil then
+		if typeof(options.Keybind) == 'EnumItem' then
+			_key = options.Keybind.Name
+		elseif typeof(options.Keybind) == 'string' then
+			_key = options.Keybind
+		end
+	end
+
 	local keybindContainer = self.container:object("TextButton", {
 		Theme = {BackgroundColor3 = "Secondary"},
 		Size = UDim2.new(1, -20, 0, 52)
@@ -3160,16 +3170,16 @@ function Library:keybind(options)
 			if listening and not UserInputService:GetFocusedTextBox() then
 				if key.UserInputType == Enum.UserInputType.Keyboard then
 					if key.KeyCode ~= Enum.KeyCode.Escape then
-						options.Keybind = key.KeyCode
-							local _keyCode = key.KeyCode
-						options.KeyChanged(tostring(_keyCode));
+						options.Keybind = key.KeyCode.Name
+						_key = key.KeyCode.Name
+						options.KeyChanged(key.KeyCode.Name);
 					end
 					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
 					listening = false
 				end
 			else
-				if key.KeyCode == options.Keybind then
+				if key.KeyCode.Name == _key then
 					options.Callback()
 				end
 			end
@@ -3184,7 +3194,13 @@ function Library:keybind(options)
 	local methods = {}
 
 	function methods:Set(keycode)
-		options.Keybind = keycode
+		if typeof(keycode) == 'EnumItem' then
+			options.Keybind = keycode.Name
+			_key = keycode.Name
+		elseif typeof(keycode) == 'string' then
+			options.Keybind = keycode
+			_key = keycode
+		end
 		keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 		keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
 	end
