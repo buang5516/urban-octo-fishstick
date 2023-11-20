@@ -1039,6 +1039,14 @@ function Library:create(options)
 			self.Toggled = not self.Toggled
 			Library:show(self.Toggled)
 		end,
+		KeyChanged = function(key)
+			local s, e = pcall(function()
+				if getgenv()._bKey then
+					getgenv():_bKey(key)
+				end
+			end)
+			if not s then warn(e) end
+		end
 	}
 
 	settingsTab:toggle{
@@ -3065,7 +3073,8 @@ function Library:keybind(options)
 		Name = "Keybind",
 		Keybind = nil,
 		Description = nil,
-		Callback = function() end
+		Callback = function() end,
+		KeyChanged = function(key) end,
 	}, options)
 
 	local keybindContainer = self.container:object("TextButton", {
@@ -3142,6 +3151,7 @@ function Library:keybind(options)
 				if key.UserInputType == Enum.UserInputType.Keyboard then
 					if key.KeyCode ~= Enum.KeyCode.Escape then
 						options.Keybind = key.KeyCode
+						options.KeyChanged(key.KeyCode)
 					end
 					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
