@@ -454,7 +454,7 @@ function Library:create(options)
 		end
 		settings = HTTPService:JSONDecode(readfile("MercurySettings.json"))
 		Library.CurrentTheme = Library.Themes[settings.Theme]
-		task.spawn(function() task.delay(5, function() self.Toggled = settings.AutoShowUI; Library:show(settings.AutoShowUI); end) end)
+		task.spawn(function() task.delay(10, function() self.Toggled = settings.AutoShowUI; Library:show(settings.AutoShowUI); end) end)
 		updateSettings = function(property, value)
 			settings[property] = value
 			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
