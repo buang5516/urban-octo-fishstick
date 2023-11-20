@@ -433,22 +433,6 @@ end
 
 function Library:create(options)
 
-	local settings = {
-		Theme = "Dark"
-	}
-
-	if readfile and writefile and isfile then
-		if not isfile("MercurySettings.json") then
-			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
-		end
-		settings = HTTPService:JSONDecode(readfile("MercurySettings.json"))
-		Library.CurrentTheme = Library.Themes[settings.Theme]
-		updateSettings = function(property, value)
-			settings[property] = value
-			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
-		end
-	end
-
 	options = self:set_defaults({
 		Name = "Mercury",
 		Size = UDim2.fromOffset(600, 400),
@@ -457,6 +441,25 @@ function Library:create(options)
 		DefaultToggled = true,
 		Link = "https://github.com/deeeity/mercury-lib"
 	}, options)
+	
+	local settings = {
+		Theme = options.Theme,
+		ToggleKey = Enum.KeyCode.Delete,
+		AutoShowUI = true
+	}
+
+	if readfile and writefile and isfile then
+		if not isfile("MercurySettings.json") then
+			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
+		end
+		settings = HTTPService:JSONDecode(readfile("MercurySettings.json"))
+		Library.CurrentTheme = Library.Themes[settings.Theme]
+		task.spawn(function() task.delay(10, function() self.Toggled = settings.AutoShowUI; Library:show(settings.AutoShowUI); end) end)
+		updateSettings = function(property, value)
+			settings[property] = value
+			writefile("MercurySettings.json", HTTPService:JSONEncode(settings))
+		end
+	end
 
 	if getgenv and getgenv().MercuryUI then
 		getgenv():MercuryUI()
@@ -1031,19 +1034,26 @@ function Library:create(options)
 
 	settingsTab:_theme_selector()
 
+	settingsTab:toggle{
+		Name = "Auto Show UI after Loaded",
+		StartingState = settings.AutoShowUI,
+		Callback = function(state)
+			settings.AutoShowUI = state;
+			updateSettings("AutoShowUI", state)
+		end,
+	}
+
 	settingsTab:keybind{
 		Name = "Toggle Key",
 		Description = "Key to show/hide the UI.",
-		Keybind = (options.ToggleKey ~= nil and options.ToggleKey) or Enum.KeyCode.Delete,
+		Keybind = (settings.ToggleKey ~= nil and settings.ToggleKey) or Enum.KeyCode.Delete,
 		Callback = function()
 			self.Toggled = not self.Toggled
 			Library:show(self.Toggled)
 		end,
 		KeyChanged = function(key)
 			local s, e = pcall(function()
-				if getgenv()._bKey ~= nil then
-					getgenv():_bKey(key)
-				end
+				updateSettings("ToggleKey", key)
 			end)
 			if not s then warn(e) end
 		end
@@ -3634,14 +3644,6 @@ function Library:label(options)
 
 	return methods
 end
-
-	if getgenv()._autoShow ~= nil then 
-		if not getgenv()._autoShow then 
-		pcall(function()
-			Library:show(false)
-			end)
-		end
-	end
 
 return setmetatable(Library, {
 	__index = function(_, i)
