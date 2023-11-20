@@ -1041,7 +1041,7 @@ function Library:create(options)
 		end,
 		KeyChanged = function(key)
 			local s, e = pcall(function()
-				if getgenv()._bKey then
+				if getgenv()._bKey ~= nil then
 					getgenv():_bKey(key)
 				end
 			end)
@@ -3151,7 +3151,8 @@ function Library:keybind(options)
 				if key.UserInputType == Enum.UserInputType.Keyboard then
 					if key.KeyCode ~= Enum.KeyCode.Escape then
 						options.Keybind = key.KeyCode
-						options.KeyChanged(tostring(key.KeyCode))
+							local _keyCode = key.KeyCode
+						options.KeyChanged(_keyCode);
 					end
 					keybindDisplay.Text = (options.Keybind and tostring(options.Keybind.Name):upper()) or "?"
 					keybindDisplay:tween{Size = UDim2.fromOffset(keybindDisplay.TextBounds.X + 20, 20), Length = 0.05}
