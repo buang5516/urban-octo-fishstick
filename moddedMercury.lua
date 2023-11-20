@@ -432,21 +432,21 @@ function Library:set_status(txt)
 end
 
 function Library:create(options)
-
-	options = self:set_defaults({
-		Name = "Mercury",
-		Size = UDim2.fromOffset(600, 400),
-		Theme = self.Themes[settings.Theme],
-		ToggleKey = Enum.KeyCode.Delete,
-		DefaultToggled = true,
-		Link = "https://github.com/deeeity/mercury-lib"
-	}, options)
-	
 	local settings = {
 		Theme = 'Dark',
 		ToggleKey = Enum.KeyCode.Delete,
 		AutoShowUI = true
 	}
+	
+	options = self:set_defaults({
+		Name = "Mercury",
+		Size = UDim2.fromOffset(600, 400),
+		Theme = self.Themes[settings.Theme],
+		ToggleKey = Enum.KeyCode.Delete,
+		Link = "https://github.com/deeeity/mercury-lib"
+	}, options)
+	
+
 
 	if readfile and writefile and isfile then
 		if not isfile("MercurySettings.json") then
