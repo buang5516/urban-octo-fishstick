@@ -443,7 +443,7 @@ function Library:create(options)
 	}, options)
 	
 	local settings = {
-		Theme = options.Theme,
+		Theme = 'Dark',
 		ToggleKey = Enum.KeyCode.Delete,
 		AutoShowUI = true
 	}
