@@ -1034,7 +1034,7 @@ function Library:create(options)
 	settingsTab:keybind{
 		Name = "Toggle Key",
 		Description = "Key to show/hide the UI.",
-		Keybind = options.ToggleKey or Enum.KeyCode.Delete,
+		Keybind = (options.ToggleKey ~= nil and options.ToggleKey) or Enum.KeyCode.Delete,
 		Callback = function()
 			self.Toggled = not self.Toggled
 			Library:show(self.Toggled)
