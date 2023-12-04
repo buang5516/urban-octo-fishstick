@@ -332,3 +332,6 @@ function FPSBOOST()
     end
     warn("FPS Booster Loaded!")
 end
+
+
+return FPSBOOST
