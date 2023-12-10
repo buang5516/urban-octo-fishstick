@@ -2,6 +2,8 @@ function FPSBOOST()
 
 repeat task.wait() until game:IsLoaded()
 if not game:IsLoaded() then game:IsLoaded():Wait(5) end
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 UserSettings():GetService("UserGameSettings").MasterVolume = 0
 local decalsyeeted = true
