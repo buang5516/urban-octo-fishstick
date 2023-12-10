@@ -1,3 +1,5 @@
+function FPSBOOST()
+
 repeat task.wait() until game:IsLoaded()
 if not game:IsLoaded() then game:IsLoaded():Wait(5) end
 
@@ -73,3 +75,7 @@ w.DescendantAdded:Connect(function(v)
         v[v.ClassName.."Template"]=1
             end
         end)
+
+end
+
+return FPSBOOST
