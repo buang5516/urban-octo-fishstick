@@ -287,6 +287,7 @@ if game.PlaceId == 6938803436 or game.PlaceId == 6990129309 or game.PlaceId == 6
 		end
 		
 		if t then
+			if game.PlaceId == 6938803436 or game.PlaceId == 7274690025 or game.PlaceId == 7338881230 then return end
 			autoMainCharacter()
 		end
 	end)
