@@ -74,6 +74,67 @@ if game.PlaceId == 6938803436 or game.PlaceId == 6990129309 or game.PlaceId == 6
 	end)
 	Sector2:AddToggle("AutoFruit", false, function(t)
 		_G.AutoFruit = t
+		
+		if t then
+			local function autoFruit()
+				if _G.__autoFruit == true then
+					return
+				end
+				_G.__autoFruit = true
+				local plr = game:GetService('Players').LocalPlayer
+				local fr1, fr2;
+				for i,v in pairs(plr.PlayerGui:GetDescendants()) do 
+					if v.Name == 'SkillFruit1' then
+						fr1 = v
+					elseif v.Name == 'SkillFruit2' then
+						fr2 = v
+					end
+				end
+				repeat task.wait() until fr1 ~= nil and fr2 ~= nil
+
+				if _G.AutoFruit == true then
+					local cd1, cd2 = fr1:FindFirstChild('SkillName'), fr2:FindFirstChild('SkillName');
+					local connections = {};
+
+					local function fruit1()
+						local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+						for i, v in next, events do firesignal(fr1[v]) end
+					end
+					local function fruit2()
+						local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+						for i, v in next, events do firesignal(fr2[v]) end
+					end
+
+					fruit1(); fruit2();
+
+					connections[1] = cd1.Changed:Connect(function()
+						if cd1.Visible == false then
+							fruit1()
+						end
+					end)
+					connections[2] = cd2.Changed:Connect(function()
+						if cd2.Visible == false then
+							fruit2()
+						end
+					end)
+
+					while task.wait(0.2) do
+						if _G.AutoFruit == false then
+							_G.__autoFruit = false 
+							for i,v in pairs(connections) do
+								if v then
+									print('Disconnected')
+									v:Disconnect();
+								end
+							end
+							break
+						end
+					end
+				end
+			end
+			autoFruit();
+		end
+		
 	end)
     Sector2:AddDropdown("SelectAttackMethod",{"Remote" , "Click" }, "Remote" ,false , function(v)
         _G.SelectAttackMethod = v
@@ -496,64 +557,7 @@ if game.PlaceId == 6938803436 or game.PlaceId == 6990129309 or game.PlaceId == 6
             end
         end
     end
-	
-	function autoFruit()
-		if _G.__autoFruit == true then
-			return
-		end
-		_G.__autoFruit = true
-		local plr = game:GetService('Players').LocalPlayer
-		local fr1, fr2;
-		for i,v in pairs(plr.PlayerGui:GetDescendants()) do 
-			if v.Name == 'SkillFruit1' then
-				fr1 = v
-			elseif v.Name == 'SkillFruit2' then
-				fr2 = v
-			end
-		end
-		repeat task.wait() until fr1 ~= nil and fr2 ~= nil
 
-		if _G.AutoFruit == true then
-			local cd1, cd2 = fr1:FindFirstChild('SkillName'), fr2:FindFirstChild('SkillName');
-			local connections = {};
-
-			local function fruit1()
-				local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-				for i, v in next, events do firesignal(fr1[v]) end
-			end
-			local function fruit2()
-				local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-				for i, v in next, events do firesignal(fr2[v]) end
-			end
-
-			fruit1(); fruit2();
-
-			connections[1] = cd1.Changed:Connect(function()
-				if cd1.Visible == false then
-					fruit1()
-				end
-			end)
-			connections[2] = cd2.Changed:Connect(function()
-				if cd2.Visible == false then
-					fruit2()
-				end
-			end)
-
-			while task.wait(0.2) do
-				if _G.AutoFruit == false then
-					_G.__autoFruit = false 
-					for i,v in pairs(connections) do
-						if v then
-							print('Disconnected')
-							v:Disconnect();
-						end
-					end
-					break
-				end
-			end
-
-		end
-	end
 
     function skillmelee()
         if _G.AutoSkill == true and _G.AutoMelee == true then
@@ -561,20 +565,6 @@ if game.PlaceId == 6938803436 or game.PlaceId == 6990129309 or game.PlaceId == 6
             melee()
         end
     end
-	
-	spawn(function()
-		pcall(function()
-			while wait(0.2) do
-				pcall(function()
-					if game.PlaceId ~= 6938803436 and game.PlaceId ~= 7274690025 and game.PlaceId ~= 7338881230 then
-						if _G.AutoSkill == true and not _G.__autoFruit then
-							autoFruit()
-						end
-					end
-				end)
-			end
-		end)
-	end)
 		
 
     spawn(function()
