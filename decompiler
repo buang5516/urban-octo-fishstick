@@ -14,7 +14,7 @@ local Player = Players.LocalPlayer
 
 local function Wait()
   if Decompile.WaitDecompile then
-     RunService.Stepped:Wait()
+    RunService.Heartbeat:Wait()
   end
 end
 
@@ -35,6 +35,7 @@ function Decompile:Type(part, Lines)
       end
       Script = Script .. Decompile:Type(b, Lines .. "  ")
       IsFirst = true
+      Wait();
     end
     
     Script = Script .. "\n" .. Lines .. "}"
@@ -44,6 +45,7 @@ function Decompile:Type(part, Lines)
     local first, firstName, Variavel2 = false, "", ""
     local Separator = part:GetFullName():split(".")
     for a,b in pairs(Separator) do
+      Wait();
       if not first then
         if not table.find(Variaveis, b) then
           if b == "Workspace" then
@@ -157,6 +159,7 @@ function Decompile.new(part)
   
   if typeof(GetClass(part)) == "table" then
     for a,b in pairs(GetClass(part)) do
+       Wait();
       if IsFirst then Script = Script .. ","end
       Script = Script .. "\n"
       if tonumber(a) then
