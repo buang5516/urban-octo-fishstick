@@ -14,7 +14,7 @@ local Player = Players.LocalPlayer
 
 local function Wait()
   if Decompile.WaitDecompile then
-    RunService.Heartbeat:Wait()
+    task.wait(1)
   end
 end
 
@@ -35,7 +35,6 @@ function Decompile:Type(part, Lines)
       end
       Script = Script .. Decompile:Type(b, Lines .. "  ")
       IsFirst = true
-      task.wait(0.1)
     end
     
     Script = Script .. "\n" .. Lines .. "}"
@@ -45,7 +44,6 @@ function Decompile:Type(part, Lines)
     local first, firstName, Variavel2 = false, "", ""
     local Separator = part:GetFullName():split(".")
     for a,b in pairs(Separator) do
-      task.wait(0.1)
       if not first then
         if not table.find(Variaveis, b) then
           if b == "Workspace" then
@@ -88,7 +86,7 @@ function Decompile:Type(part, Lines)
       local upvalue, constant
       pcall(function()
         if getupvalues and #getupvalues(part) >= 1 then
-          for a,b in pairs(getupvalues(part)) do task.wait(0.1)
+          for a,b in pairs(getupvalues(part)) do Wait()
             
             if not upvalue then Script = Script .. "\n" .. Lines .. "  local upvalues = {\n" .. Lines .. "    "
             else Script = Script .. ",\n" .. Lines .. "    " end
@@ -102,7 +100,7 @@ function Decompile:Type(part, Lines)
     if Decompile.getconstants then
       pcall(function()
         if getconstants and #getconstants(part) >= 1 then
-          for a,b in pairs(getconstants(part)) do task.wait(0.1)
+          for a,b in pairs(getconstants(part)) do Wait()
             
             if not constant then Script = Script .. "\n" .. Lines .. "  local constants = {\n" .. Lines .. "    "
             else Script = Script .. ",\n" .. Lines .. "    " end
@@ -159,7 +157,6 @@ function Decompile.new(part)
   
   if typeof(GetClass(part)) == "table" then
     for a,b in pairs(GetClass(part)) do
-      task.wait(0.1)
       if IsFirst then Script = Script .. ","end
       Script = Script .. "\n"
       if tonumber(a) then
@@ -177,7 +174,6 @@ function Decompile.new(part)
   local Var = ""
   table.foreach(Variaveis, function(_,Val)
     Var = Var .. "local " .. Val .. ' = game:GetService("' .. Val .. '")' .. "\n"
-                task.wait(0.1)
   end)
   
   if Decompile.setclipboard then
