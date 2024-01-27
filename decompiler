@@ -1,4 +1,4 @@
--- credits to RedzHUB
+--credits to Redzhub
 
 local Decompile = {
   WaitDecompile = false,
@@ -14,7 +14,7 @@ local Player = Players.LocalPlayer
 
 local function Wait()
   if Decompile.WaitDecompile then
-    task.wait(1)
+     RunService.Stepped:Wait()
   end
 end
 
