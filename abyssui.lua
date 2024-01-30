@@ -185,7 +185,6 @@ do
     end
     --
     Utility.OnMouse = function(Instance)
-        local Mouse = UserInput:GetMouseLocation()
         if Instance.Visible and (Mouse.X > Instance.Position.X) and (Mouse.X < Instance.Position.X + Instance.Size.X) and (Mouse.Y > Instance.Position.Y) and (Mouse.Y < Instance.Position.Y + Instance.Size.Y) then
             if Library.WindowVisible then
                 return true
@@ -198,40 +197,47 @@ do
     end
     --
     Utility.AddDrag = function(Sensor, List)
-        local DragUtility = {
-            MouseStart = Vector2.new(), MouseEnd = Vector2.new(), Dragging = false
-        }
+        local dragging
+        local dragInput
+        local dragStart
+        local startPos
+        local function updateDrag(input)
+            local delta = input.Position - dragStart
+            local dragTime = 0.04
+            local SmoothDrag = {}
+            SmoothDrag.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            local dragSmoothFunction = TS:Create(dragwith, TweenInfo.new(dragTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), SmoothDrag)
+            dragSmoothFunction:Play()
+        end
         --
         Utility.AddConnection(UserInput.InputBegan, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 if Utility.OnMouse(Sensor) then
-                    DragUtility.Dragging = true
+                    dragging = true
+                    dragStart = input.Position
+                    startPos = dragwith.Position
                 end
             end
         end)
         --
         Utility.AddConnection(UserInput.InputEnded, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                DragUtility.Dragging = false
+                dragging = false
             end
         end)
         --
-        Utility.AddConnection(RunService.RenderStepped, function()
-            DragUtility.MouseStart = UserInput:GetMouseLocation()
-            --
-            for Index, Value in pairs(List) do
-                if Index ~= nil and Value ~= nil then
-                    if DragUtility.Dragging then
-                        Value[1].Position = Vector2.new(
-                            Value[1].Position.X + (DragUtility.MouseStart.X - DragUtility.MouseEnd.X), 
-                            Value[1].Position.Y + (DragUtility.MouseStart.Y - DragUtility.MouseEnd.Y)
-                        )
-                    end
-                end
+        Utility.AddConnection(Sensor.InputChanged, function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = Input
             end
-            --
-            DragUtility.MouseEnd = UserInput:GetMouseLocation()
         end)
+        --
+        Utility.AddConnection(UserInput.InputChanged, function(Input)
+            if Input == dragInput and dragging then
+                updateDrag(Input)
+            end
+        end)
+        
     end
     --
     Utility.AddCursor = function(Instance)
