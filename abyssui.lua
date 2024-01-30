@@ -201,7 +201,8 @@ do
         local DragUtility = {
             MouseStart = Vector2.new(), MouseEnd = Vector2.new(), Dragging = false
         }
-        local dragStart, startPos, dragPos, dragInput
+        local dragStart, startPos, dragInput
+        local dragPos = {X=0,Y=0}
         local function updateDrag(Input)
             local delta = Input.Position - dragStart
             dragPos = {X=delta.X,Y=delta.Y}
@@ -233,14 +234,20 @@ do
             end
         end)
         Utility.AddConnection(RunService.RenderStepped, function()
+            DragUtility.MouseStart = UserInput:GetMouseLocation()
             --
             for Index, Value in pairs(List) do
                 if Index ~= nil and Value ~= nil then
                     if DragUtility.Dragging then
-                        Value[1].Position = Vector2.new(dragPos.X, dragPos.Y)
+                        Value[1].Position = Vector2.new(
+                            Value[1].Position.X + (DragUtility.MouseStart.X - DragUtility.MouseEnd.X) * 0.5, 
+                            Value[1].Position.Y + (DragUtility.MouseStart.Y - DragUtility.MouseEnd.Y) * 0.5
+                        )
                     end
                 end
             end
+            --
+            DragUtility.MouseEnd = UserInput:GetMouseLocation()
         end)
     end
     --
