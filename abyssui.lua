@@ -61,8 +61,8 @@ local Library = {
         KeyBoard = {["Q"] = "Q", ["W"] = "W", ["E"] = "E", ["R"] = "R", ["T"] = "T", ["Y"] = "Y", ["U"] = "U", ["I"] = "I", ["O"] = "O", ["P"] = "P", ["A"] = "A", ["S"] = "S", ["D"] = "D", ["F"] = "F", ["G"] = "G", ["H"] = "H", ["J"] = "J", ["K"] = "K", ["L"] = "L", ["Z"] = "Z", ["X"] = "X", ["C"] = "C", ["V"] = "V", ["B"] = "B", ["N"] = "N", ["M"] = "M", ["One"] = {"1", "!"}, ["Two"] = {"2", "\""}, ["Three"] = {"3", "£"}, ["Four"] = {"4", "$"}, ["Five"] = {"5", "%"}, ["Six"] = {"6", "^"}, ["Seven"] = {"7", "&"}, ["Eight"] = {"8", "*"}, ["Nine"] = {"9", "("}, ["Zero"] = {"0", ")"}, ["Space"] = " ", ["Slash"] = {"/", "?"}, ["BackSlash"] = {"\\", "|"}, ["Minus"] = {"-", "_"}, ["Equals"] = {"=", "+"}, ["RightBracket"] = {"]", "}"}, ["LeftBracket"] = {"[", "{"}, ["Semicolon"] = {";", ":"}, ["Quote"] = {"'", "@"}, ["Comma"] = {",", "<"}, ["Period"] = {".", ">"}},
         Letters = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"},
         KeyCodes = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", "One", "Two", "Three", "Four", "Five", "Six", "Seveen", "Eight", "Nine", "Zero", "Insert", "Tab", "Home", "End", "LeftAlt", "LeftControl", "LeftShift", "RightAlt", "RightControl", "RightShift", "CapsLock"},
-        Inputs = {"MouseButton1", "MouseButton2", "MouseButton3", "Touch"},
-        Shortened = {["Touch"] = 'M1', ["MouseButton1"] = "M1", ["MouseButton2"] = "M2", ["MouseButton3"] = "M3", ["Insert"] = "INS", ["LeftAlt"] = "LA", ["LeftControl"] = "LC", ["LeftShift"] = "LS", ["RightAlt"] = "RA", ["RightControl"] = "RC", ["RightShift"] = "RS", ["CapsLock"] = "CL"}
+        Inputs = {"MouseButton1", "MouseButton2", "MouseButton3"},
+        Shortened = {["MouseButton1"] = "M1", ["MouseButton2"] = "M2", ["MouseButton3"] = "M3", ["Insert"] = "INS", ["LeftAlt"] = "LA", ["LeftControl"] = "LC", ["LeftShift"] = "LS", ["RightAlt"] = "RA", ["RightControl"] = "RC", ["RightShift"] = "RS", ["CapsLock"] = "CL"}
     },
     Input = {
         Caplock = false,
@@ -185,6 +185,7 @@ do
     end
     --
     Utility.OnMouse = function(Instance)
+        local Mouse = UserInput:GetMouseLocation()
         if Instance.Visible and (Mouse.X > Instance.Position.X) and (Mouse.X < Instance.Position.X + Instance.Size.X) and (Mouse.Y > Instance.Position.Y) and (Mouse.Y < Instance.Position.Y + Instance.Size.Y) then
             if Library.WindowVisible then
                 return true
@@ -197,48 +198,40 @@ do
     end
     --
     Utility.AddDrag = function(Sensor, List)
-        local List = List;
-        local dragging
-        local dragInput
-        local dragStart
-        local startPos
-        local function updateDrag(input)
-            local delta = input.Position - dragStart
-            local dragTime = 0.04
-            local SmoothDrag = {}
-            SmoothDrag.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            local dragSmoothFunction = TS:Create(dragwith, TweenInfo.new(dragTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), SmoothDrag)
-            dragSmoothFunction:Play()
-        end
+        local DragUtility = {
+            MouseStart = Vector2.new(), MouseEnd = Vector2.new(), Dragging = false
+        }
         --
         Utility.AddConnection(UserInput.InputBegan, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                 if Utility.OnMouse(Sensor) then
-                    dragging = true
-                    dragStart = input.Position
-                    startPos = dragwith.Position
+                    DragUtility.Dragging = true
+                    DragUtility.MouseStart = Input.Position
                 end
             end
         end)
         --
         Utility.AddConnection(UserInput.InputEnded, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
+                DragUtility.Dragging = false
+                DragUtility.MouseEnd = Input.Position
             end
         end)
         --
-        Sensor.InputChanged:Connect(function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
-                dragInput = Input
+        Utility.AddConnection(RunService.RenderStepped, function()
+            --
+            for Index, Value in pairs(List) do
+                if Index ~= nil and Value ~= nil then
+                    if DragUtility.Dragging then
+                        Value[1].Position = Vector2.new(
+                            Value[1].Position.X + (DragUtility.MouseStart.X - DragUtility.MouseEnd.X), 
+                            Value[1].Position.Y + (DragUtility.MouseStart.Y - DragUtility.MouseEnd.Y)
+                        )
+                    end
+                end
             end
+            --
         end)
-        --
-        Utility.AddConnection(UserInput.InputChanged, function(Input)
-            if Input == dragInput and dragging then
-                updateDrag(Input)
-            end
-        end)
-        
     end
     --
     Utility.AddCursor = function(Instance)
@@ -1293,7 +1286,7 @@ do
                                 return
                             end
                         end
-                        if ( Input.UserInputType == Enum.UserInputType.MouseButton1  or Input.UserInputType == Enum.UserInputType.Touch ) and Utility.OnMouse(ToggleHitbox) then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 and Utility.OnMouse(ToggleHitbox) then
                             Toggle.Toggled = not Toggle.Toggled
                             Toggle:Set(Toggle.Toggled)
                         end
@@ -1775,7 +1768,7 @@ do
                                     return
                                 end
                             end
-                            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 Colorpicker.HueDragging = false
                                 Colorpicker.SaturationDragging = false
                             end
@@ -1803,7 +1796,7 @@ do
                             if Useless then
                                 return
                             end
-                            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 for Index, Value in pairs(Tab.Dropdowns[Side]) do
                                     if Index ~= ToggleTitle.Text and Value then
                                         return
@@ -2129,48 +2122,6 @@ do
                                     Tab.Dropdowns["Left"][ToggleTitle.Text] = Keybind.Dropped
                                     Tab.Dropdowns["Right"][ToggleTitle.Text] = Keybind.Dropped
                                 end
-                            elseif Input.UserInputType == Enum.UserInputType.Touch then
-                                if Keybind.Binding then
-                                    Keybind.Binding = false
-                                    Keybind.Key = Enum.UserInputType.TouchEnabled
-                                    Keybind.EnumType = "UserInputType"
-                                    local Old = Keybind.Shorten
-                                    Keybind.Shorten = Library.Keys.Shortened[Keybind.Key.Name] or Keybind.Key.Name
-                                    Window.BindList = string.gsub(Window.BindList, "\n%[" .. Old .. "%] " .. Options.Title, ("\n[%s] %s"):format(Keybind.Shorten, Options.Title))
-                                    KeybindValue.Text = Keybind.Binding and "[...]" or Keybind.Shorten
-                                end
-                                if Utility.OnMouse(KeybindHoldInline) then
-                                    Keybind:SetStateType("Hold")
-                                end
-                                if Utility.OnMouse(KeybindToggleInline) then
-                                    Keybind:SetStateType("Toggle")
-                                end
-                                if Utility.OnMouse(KeybindAlwaysInline) then
-                                    Keybind:SetStateType("Always")
-                                end
-                                if Utility.OnMouse(KeybindInline) then
-                                    for Index, Value in pairs(Tab.Dropdowns[Side]) do
-                                        if Value then
-                                            return
-                                        end
-                                    end
-                                    if Keybind.Binding then
-                                        Keybind.Binding = false
-                                        KeybindValue.Text = Keybind.Shorten
-                                        Keybind.ShowRender = ("[%s] %s"):format(Keybind.Shorten, Options.Title)
-                                    else
-                                        Keybind.Binding = true
-                                        KeybindValue.Text = Keybind.Binding and "[...]" or Keybind.Shorten
-                                    end
-                                else
-                                    if Utility.OnMouse(KeybindHoldInline) or Utility.OnMouse(KeybindToggleInline) or Utility.OnMouse(KeybindAlwaysInline) then
-                                        return
-                                    end
-                                    Keybind.Dropped = false
-                                    Keybind:Drop(Keybind.Dropped)
-                                    Tab.Dropdowns["Left"][ToggleTitle.Text] = Keybind.Dropped
-                                    Tab.Dropdowns["Right"][ToggleTitle.Text] = Keybind.Dropped
-                                end
                             elseif Input.UserInputType == Enum.UserInputType.Keyboard then
                                 if Keybind.Binding then
                                     Keybind.Binding = false
@@ -2429,7 +2380,7 @@ do
                                 return
                             end
                         end
-                        if ( Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch ) and Utility.OnMouse(SliderOutline) then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 and Utility.OnMouse(SliderOutline) then
                             Slider:Refresh()
                             Slider.Dragging = true
                         end
@@ -2442,7 +2393,7 @@ do
                                 return
                             end
                         end
-                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                             Slider.Dragging = false
                         end
                     end)
@@ -2556,7 +2507,7 @@ do
                     --
                     Utility.AddConnection(UserInput.InputBegan, function(Input, Useless)
                         
-                        if ( Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch ) and Utility.OnMouse(ButtonOutline) then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 and Utility.OnMouse(ButtonOutline) then
                             for Index, Value in pairs(Tab.Dropdowns[Side]) do
                                 if Value then
                                     return
@@ -3015,7 +2966,7 @@ do
                                 return
                             end
                         end
-                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                             Colorpicker.HueDragging = false
                             Colorpicker.SaturationDragging = false
                         end
@@ -3049,7 +3000,7 @@ do
                     --
                     Utility.AddConnection(UserInput.InputBegan, function(Input, Useless)
                         
-                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                             for Index, Value in pairs(Tab.Dropdowns[Side]) do
                                 if Index ~= ColorpickerTitle.Text and Value then
                                     return
@@ -3315,7 +3266,7 @@ do
                                     return
                                 end
                             end
-                            if ( Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch ) and Utility.OnMouse(SelectionInline) then
+                            if Input.UserInputType == Enum.UserInputType.MouseButton1 and Utility.OnMouse(SelectionInline) then
                                 Dropdown:Set(Value)
                             end
                         end)
@@ -3330,7 +3281,7 @@ do
                     --
                     Utility.AddConnection(UserInput.InputBegan, function(Input, Useless)
                         
-                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                             if Utility.OnMouse(DropdownInline) then
                                 for Index, Value in pairs(Tab.Dropdowns[Side]) do
                                     if Index ~= DropdownTitle.Text and Value then
@@ -3640,41 +3591,10 @@ do
                     --
                     Utility.AddConnection(UserInput.InputBegan, function(Input, Useless)
                         
-                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                             if Keybind.Binding then
                                 Keybind.Binding = false
                                 Keybind.Key = Enum.UserInputType.MouseButton1
-                                Keybind.EnumType = "UserInputType"
-                                Keybind.Shorten = Library.Keys.Shortened[Keybind.Key.Name] or Keybind.Key.Name
-                                KeybindValue.Text = Keybind.Binding and "[...]" or Keybind.Shorten
-                            end
-                            if Utility.OnMouse(KeybindInline) then
-                                for Index, Value in pairs(Tab.Dropdowns[Side]) do
-                                    if Index ~= KeybindTitle.Text and Value then
-                                        return
-                                    end
-                                end
-                                if Keybind.Binding then
-                                    Keybind.Binding = false
-                                    KeybindValue.Text = Keybind.Shorten
-                                else
-                                    Keybind.Binding = true
-                                    KeybindValue.Text = Keybind.Binding and "[...]" or Keybind.Shorten
-                                end
-                            end
-                            if Utility.OnMouse(KeybindHoldInline) then
-                                Keybind:SetStateType("Hold")
-                            end
-                            if Utility.OnMouse(KeybindToggleInline) then
-                                Keybind:SetStateType("Toggle")
-                            end
-                            if Utility.OnMouse(KeybindAlwaysInline) then
-                                Keybind:SetStateType("Always")
-                            end
-                        elseif Input.UserInputType == Enum.UserInputType.Touch then
-                            if Keybind.Binding then
-                                Keybind.Binding = false
-                                Keybind.Key = Enum.UserInputType.Touch
                                 Keybind.EnumType = "UserInputType"
                                 Keybind.Shorten = Library.Keys.Shortened[Keybind.Key.Name] or Keybind.Key.Name
                                 KeybindValue.Text = Keybind.Binding and "[...]" or Keybind.Shorten
@@ -3775,7 +3695,7 @@ do
                 if Useless then
                     return
                 end
-                if ( Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch ) and Utility.OnMouse(TabInline) then
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 and Utility.OnMouse(TabInline) then
                     task.spawn(function()
                         --[[
                             local Speed = 4
