@@ -197,6 +197,7 @@ do
     end
     --
     Utility.AddDrag = function(Sensor, List)
+        local List = List;
         local dragging
         local dragInput
         local dragStart
@@ -226,7 +227,7 @@ do
             end
         end)
         --
-        Utility.AddConnection(Sensor.InputChanged, function(Input)
+        Sensor.InputChanged:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
                 dragInput = Input
             end
