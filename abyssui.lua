@@ -204,7 +204,7 @@ do
         local dragStart, startPos, dragPos, dragInput
         local function updateDrag(Input)
             local delta = Input.Position - dragStart
-            dragPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            dragPos = {X=delta.X,Y=delta.Y}
         end
         --
         Utility.AddConnection(UserInput.InputBegan, function(Input)
