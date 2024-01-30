@@ -237,7 +237,7 @@ do
             for Index, Value in pairs(List) do
                 if Index ~= nil and Value ~= nil then
                     if DragUtility.Dragging then
-                        Value[1].Position = dragPos
+                        Value[1].Position = Vector2.new(dragPos.X, dragPos.Y)
                     end
                 end
             end
