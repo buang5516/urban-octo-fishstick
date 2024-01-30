@@ -223,13 +223,11 @@ do
             end
         end)
         --
-        Utility.AddConnection(Sensor.InputChanged, function(Input)
+        Utility.AddConnection(UserInput.InputChanged, function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
                 dragInput = Input
             end
-        end)
-        --
-        Utility.AddConnection(UserInput.InputChanged, function(Input)
+
             if Input == dragInput and dragging then
                 updateDrag(Input)
             end
