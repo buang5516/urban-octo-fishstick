@@ -5,6 +5,8 @@ end
 game:GetService("Players").LocalPlayer.Data.hasPass.Value = true
 game:GetService("Players").LocalPlayer.Data.PassTier.Value = 50
 
+local a = 0
+
 for i = 1, 50 do
     task.spawn(function()
         local args = {
@@ -21,7 +23,9 @@ for i = 1, 50 do
         
         game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("ClaimRewardPass"):InvokeServer(unpack(args2))
     end)
+    a += 1
     task.wait()
 end
 
+repeat task.wait() until a == 50
 game:GetService('TeleportService'):Teleport(game.PlaceId)
