@@ -1,5 +1,5 @@
 if queue_on_teleport then
-    queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/buang5516/urban-octo-fishstick/main/supersecretscript"))()')
+    queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/buang5516/urban-octo-fishstick/main/supersecretscripts.lua"))()')
 end
 
 game:GetService("Players").LocalPlayer.Data.hasPass.Value = true
@@ -21,6 +21,7 @@ for i = 1, 50 do
         
         game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("ClaimRewardPass"):InvokeServer(unpack(args2))
     end)
+    task.wait()
 end
 
 game:GetService('TeleportService'):Teleport(game.PlaceId)
