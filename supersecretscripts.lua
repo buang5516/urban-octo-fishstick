@@ -15,7 +15,7 @@ for i = 1, 50 do
         game:GetService("ReplicatedStorage"):WaitForChild("Remote"):WaitForChild("ClaimRewardPass"):InvokeServer(unpack(args))
         
         local args2 = {
-            [1] = 50,
+            [1] = i,
             [2] = "Premium"
         }
         
