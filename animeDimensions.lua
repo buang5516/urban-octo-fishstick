@@ -17,7 +17,7 @@ if game.PlaceId == 6938803436 or game.PlaceId == 6990129309 or game.PlaceId == 6
             end
         end
     end
-    local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SmellLikeHacker/IDK/main/GUI56"))()
+    local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/buang5516/urban-octo-fishstick/main/adui.lua"))()
     local Window = library:CreateWindow("SLH Hub | ".."AnimeDimensions".." | V1.52")
     local Tab1 = Window:CreateTab("Main")
 	local Sector1 = Tab1:CreateSector("Farming", "left")
