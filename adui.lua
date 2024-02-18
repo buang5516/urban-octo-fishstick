@@ -3476,8 +3476,5 @@ if not game:GetService("CoreGui"):FindFirstChild("Credit") then
 	TexT.TextColor3 = Color3.fromRGB(255, 0, 4);
 	TexT.TextScaled = true;
 	TexT.TextWrapped = true;
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/SmellLikeHacker/IDK/main/Notification"))();
-    wait()
-    Notification(1, "SmellLikehacker Hub", "Executed!", 10);
 end
 return library;
