@@ -68,7 +68,7 @@ function PandaAuth:GetHardwareID(service)
 		end
 	else
 		-- Handle the error, for example:
-		--warn("Failed to decode JSON data:", jsonData)
+		warn("Failed to decode JSON data:", jsonData)
 		return client_id -- or any other appropriate action
 	end    
 end
@@ -141,11 +141,31 @@ function PandaAuth:MagicPass(Forced)
 	end
 end
 
+local random = Random.new()
+local letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}
+
+function getRandomLetter()
+	return letters[random:NextInteger(1,#letters)]
+end
+
+function getRandomString(length, includeCapitals)
+	local length = length or 10
+	local str = ''
+	for i=1,length do
+		local randomLetter = getRandomLetter()
+		if includeCapitals and random:NextNumber() > .5 then
+			randomLetter = string.upper(randomLetter)
+		end
+		str = str .. randomLetter
+	end
+	return str
+end
+
 function PandaAuth:ValidateKeyless(service, hwid)
 	service = string.lower(service)
-	
+	local asdgf = false
 	local response = request({
-		Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. "&key=keyless",
+		Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. getRandomString(2,true) .. "&key=keyless",
 		Method = "GET"
 	})
 	if response.StatusCode == 200 then
@@ -154,14 +174,33 @@ function PandaAuth:ValidateKeyless(service, hwid)
 			return http_service:JSONDecode(response.Body)
 		end)
 		if success and data["status"] == "success" then
-			return true
 		end
-		return false
+		asdgf = true
 	else
-		warn("- - - - - - - - - - - - - - - - - - - - - - - ")
-		warn("Server Response: " .. response.StatusCode)
-		warn("- - - - - - - - - - - - - - - - - - - - - - - ")
-		return false
+		asdgf = true
+	end
+
+	if asdgf then 
+
+		local response2 = request({
+			Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. "&key=keyless",
+			Method = "GET"
+		})
+		if response2.StatusCode == 200 then
+			-- Instead of fucking finding a string true... why do this
+			local success, data = pcall(function()
+				return http_service:JSONDecode(response2.Body)
+			end)
+			if success and data["status"] == "success" then
+				return true
+			end
+			return false
+		else
+			warn("- - - - - - - - - - - - - - - - - - - - - - - ")
+			warn("Server Response: " .. response2.StatusCode)
+			warn("- - - - - - - - - - - - - - - - - - - - - - - ")
+			return false
+		end
 	end
 end
 
