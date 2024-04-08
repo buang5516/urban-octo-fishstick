@@ -68,7 +68,7 @@ function PandaAuth:GetHardwareID(service)
 		end
 	else
 		-- Handle the error, for example:
-		warn("Failed to decode JSON data:", jsonData)
+		--warn("Failed to decode JSON data:", jsonData)
 		return client_id -- or any other appropriate action
 	end    
 end
