@@ -38,7 +38,7 @@ function DebugText(text)
 	end
 end
 
-local function GetHardwareID(service)
+function PandaAuth:GetHardwareID(service)
 	local client_id = rbx_analytics_service:GetClientId()
 	local success, jsonData = pcall(function()
 		return http_service:JSONDecode(game:HttpGet(server_configuration .. "/serviceapi?service=" .. service .. "&command=getconfig"))
