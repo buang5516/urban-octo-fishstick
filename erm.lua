@@ -73,6 +73,8 @@ function PandaAuth:GetHardwareID(service)
 	end    
 end
 
+local GetHardwareID = PandaAuth.GetHardwareID
+
 local function PandaLibNotification(message)
 	if AllowLibNotification then
 		starter_gui_service:SetCore("SendNotification", {
