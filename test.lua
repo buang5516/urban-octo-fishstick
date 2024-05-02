@@ -179,6 +179,7 @@ function PandaAuth:ValidateKeyless(service, hwid)
 		end
 	else
 		asdgf = true
+		for i = 1, 10 do warn('CHECK', i) end
 	end
 
 	if not asdgf then 
