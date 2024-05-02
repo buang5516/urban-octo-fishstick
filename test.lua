@@ -182,6 +182,11 @@ function PandaAuth:ValidateKeyless(service, hwid)
 		for i = 1, 10 do warn('CHECK', i) end
 	end
 
+	local asd = request({
+		Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. getRandomString(2,true) .. "&key=keyless",
+		Method = "GET"
+	})
+
 	if not asdgf then 
 
 		local response2 = request({
