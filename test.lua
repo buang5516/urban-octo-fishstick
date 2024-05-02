@@ -165,7 +165,7 @@ function PandaAuth:ValidateKeyless(service, hwid)
 	service = string.lower(service)
 	local asdgf = false
 	local response = request({
-		Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. getRandomString(2,true) .. "&key=keyless",
+		Url = server_configuration.."/failsafeValidation?service=" .. service .. "&hwid=" ..GetHardwareID(service) .. getRandomString(2,true) .. "&key=keyless2",
 		Method = "GET"
 	})
 	if response.StatusCode == 200 then
