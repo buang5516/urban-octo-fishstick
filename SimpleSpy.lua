@@ -69,7 +69,7 @@ SimpleSpy2.ResetOnSpawn = false
 local SpyFind = CoreGui:FindFirstChild(SimpleSpy2.Name)
 
 if SpyFind and SpyFind ~= SimpleSpy2 then
-  SpyFind:Destroy()
+	SpyFind:Destroy()
 end
 
 Background.Name = "Background"
@@ -88,8 +88,8 @@ nextb.Image = "rbxassetid://7072720870"
 nextb.Active = true
 nextb.Draggable = true
 nextb.MouseButton1Down:connect(function()
-nextb.Image = (Background.Visible and "rbxassetid://7072720870") or "rbxassetid://7072719338"
-Background.Visible = not Background.Visible
+	nextb.Image = (Background.Visible and "rbxassetid://7072720870") or "rbxassetid://7072719338"
+	Background.Visible = not Background.Visible
 end)
 
 LeftPanel.Name = "LeftPanel"
@@ -676,7 +676,7 @@ function onBarInput(input)
 					(currentX < 0 and currentX < currentPos.X)
 					or (
 						currentX > (viewportSize.X - (sideClosed and 131 or TopBar.AbsoluteSize.X))
-						and currentX > currentPos.X
+							and currentX > currentPos.X
 					)
 				then
 					if currentX < 0 then
@@ -689,7 +689,7 @@ function onBarInput(input)
 					(currentY < 0 and currentY < currentPos.Y)
 					or (
 						currentY > (viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36)
-						and currentY > currentPos.Y
+							and currentY > currentPos.Y
 					)
 				then
 					if currentY < 0 then
@@ -1160,8 +1160,8 @@ function genScript(remote, args)
 	local gen = ""
 	if #args > 0 then
 		if not pcall(function()
-			gen = v2v({ args = args }) .. "\n"
-		end) then
+				gen = v2v({ args = args }) .. "\n"
+			end) then
 			gen = gen
 				.. "-- TableToString failure! Reverting to legacy functionality (results may vary)\nlocal args = {"
 			if
@@ -1688,7 +1688,7 @@ function formatstr(s, indentation)
 		.. '"'
 		.. (
 			reachedMax
-				and " --[[ MAXIMUM STRING SIZE REACHED, CHANGE '_G.SimpleSpyMaxStringSize' TO ADJUST MAXIMUM SIZE ]]"
+			and " --[[ MAXIMUM STRING SIZE REACHED, CHANGE '_G.SimpleSpyMaxStringSize' TO ADJUST MAXIMUM SIZE ]]"
 			or ""
 		)
 end
@@ -2180,7 +2180,6 @@ if not _G.SimpleSpyExecuted then
 		Simple.MouseEnter:Connect(onToggleButtonHover)
 		Simple.MouseLeave:Connect(onToggleButtonUnhover)
 		CloseButton.MouseButton1Click:Connect(shutdown)
-		table.insert(connections, UserInputService.InputBegan:Connect(backgroundUserInput))
 		connectResize()
 		SimpleSpy2.Enabled = true
 		coroutine.wrap(function()
@@ -2200,7 +2199,6 @@ if not _G.SimpleSpyExecuted then
 		end
 		Mouse = Players.LocalPlayer:GetMouse()
 		oldIcon = Mouse.Icon
-		table.insert(connections, Mouse.Move:Connect(mouseMoved))
 	end)
 	if not succeeded then
 		warn(
