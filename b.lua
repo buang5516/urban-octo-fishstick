@@ -9,6 +9,7 @@ local Player 			= Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterPlayer		= game:GetService("StarterPlayer")
 local Mouse					= Player:GetMouse()
+local VirtualUser				= game:GetService("VirtualUser")
 
 Player.Idled:Connect(function()
 	VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
@@ -18,7 +19,6 @@ end)
 
 --// Variables
 
-local loader = Player:WaitForChild("PlayerScripts"):WaitForChild("PlayerScriptsLoader")
 local icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/src/Icons.lua"))()
 local isStudio = RunService:IsStudio()
 local LocalPlayer = Players.LocalPlayer
