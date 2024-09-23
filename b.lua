@@ -5036,3 +5036,5 @@ function MacLib:Demo()
 
 	tabs.Main:Select()
 end
+
+return MacLib;
