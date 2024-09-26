@@ -254,7 +254,7 @@ do
 
 		if togglebool == true then
 			if Settings.Callback then
-				task.delay(0.1, Settings.Callback, togglebool)
+				task.delay(0.05, Settings.Callback, togglebool)
 			end
 		end
 
