@@ -1181,7 +1181,7 @@ do
 				local isSelected = false
 				if Settings.Default then
 					if Settings.Multi then
-						isSelected = table.find(Settings.Default, v) and true or false
+						isSelected = (table.find(Settings.Default, v) or Settings.Default[v] ~= nil) and true or false
 					else
 						isSelected = (Settings.Default == i or Settings.Default == v) and true or false
 					end
@@ -1189,7 +1189,7 @@ do
 				local option = OptionObjs[v].Button
 
 				local function tog_gle()
-					local isSelecteds = table.find(Selected, v) and true or false
+					local isSelecteds = (table.find(Selected, v) or Settings.Default[v] ~= nil) and true or false
 					local newSelected = not isSelecteds
 
 					if Settings.Required and not newSelected and #Selected <= 1 then
