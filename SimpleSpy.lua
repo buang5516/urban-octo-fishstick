@@ -1874,7 +1874,7 @@ function remoteHandler(hookfunction, methodName, remote, args, funcInfo, calling
 				end
 			end)
 		end
-		if methodName:lower() == "fireserver" then
+		if methodName == "FireServer" then
 			newRemote(
 				"event",
 				remote.Name,
@@ -1884,7 +1884,7 @@ function remoteHandler(hookfunction, methodName, remote, args, funcInfo, calling
 				(blocklist[remote] or blocklist[remote.Name]),
 				src
 			)
-		elseif methodName:lower() == "invokeserver" then
+		elseif methodName == "InvokeServer" then
 			newRemote(
 				"function",
 				remote.Name,
@@ -1927,7 +1927,7 @@ function hookRemote(remoteType, remote, ...)
 					schedule(
 						remoteHandler,
 						true,
-						remoteType == "RemoteEvent" and "fireserver" or "invokeserver",
+						remoteType == "RemoteEvent" and "FireServer" or "InvokeServer",
 						remote,
 						args,
 						funcInfo,
@@ -1944,7 +1944,7 @@ function hookRemote(remoteType, remote, ...)
 				schedule(
 					remoteHandler,
 					true,
-					remoteType == "RemoteEvent" and "fireserver" or "invokeserver",
+					remoteType == "RemoteEvent" and "FireServer" or "InvokeServer",
 					remote,
 					args,
 					funcInfo,
@@ -1980,7 +1980,7 @@ local newnamecall = newcclosure(function(remote, ...)
 		end)
 		if
 			validInstance
-			and (methodName == "FireServer" or methodName == "fireServer" or methodName == "InvokeServer" or methodName == "invokeServer")
+			and (methodName == "FireServer" or methodName == "InvokeServer")
 			and not (blacklist[remote] or blacklist[remoteName])
 		then
 			local funcInfo = {}
@@ -1989,7 +1989,7 @@ local newnamecall = newcclosure(function(remote, ...)
 				funcInfo = debug.getinfo(3) or funcInfo
 				calling = useGetCallingScript and getcallingscript() or nil
 			end
-			if recordReturnValues and (methodName == "InvokeServer" or methodName == "invokeServer") then
+			if recordReturnValues and (methodName == "InvokeServer") then
 				local namecallThread = coroutine.running()
 				local args = { ... }
 				task.defer(function()
@@ -2012,18 +2012,18 @@ local newnamecall = newcclosure(function(remote, ...)
 				end)()
 			end
 		end
-		if recordReturnValues and (methodName == "InvokeServer" or methodName == "invokeServer") then
+		if recordReturnValues and (methodName == "InvokeServer") then
 			return coroutine.yield()
 		elseif
 			validInstance
-			and (methodName == "FireServer" or methodName == "fireServer" or methodName == "InvokeServer" or methodName == "invokeServer")
+			and (methodName == "FireServer" or methodName == "InvokeServer")
 			and (blocklist[remote] or blocklist[remoteName])
 		then
 			return nil
 		elseif
-			(not recordReturnValues or methodName ~= "InvokeServer" or methodName ~= "invokeServer")
+			(not recordReturnValues or methodName ~= "InvokeServer")
 			and validInstance
-			and (methodName == "FireServer" or methodName == "fireServer" or methodName == "InvokeServer" or methodName == "invokeServer")
+			and (methodName == "FireServer" or methodName == "InvokeServer")
 			and remoteHooks[remote]
 		then
 			return original(remote, remoteHooks[remote](...))
