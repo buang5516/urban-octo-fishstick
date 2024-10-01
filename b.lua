@@ -1196,9 +1196,7 @@ do
 					if Settings.Required and not newSelected and #Selected <= 1 then
 						return
 					end
-					
-					print(v, newSelected)
-
+				
 					Toggle(v, newSelected)
 
 					task.spawn(function()
