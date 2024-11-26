@@ -8,12 +8,6 @@
         Frosty - GUI to Lua
 ]]
 
---[[
-
-  Modification Made By - REDz
-  
-]]
-
 -- shuts down the previous instance of SimpleSpy
 if _G.SimpleSpyExecuted and type(_G.SimpleSpyShutdown) == "function" then
 	print(pcall(_G.SimpleSpyShutdown))
@@ -57,40 +51,18 @@ local MinimizeButton = Instance.new("TextButton")
 local ImageLabel_3 = Instance.new("ImageLabel")
 local ToolTip = Instance.new("Frame")
 local TextLabel = Instance.new("TextLabel")
-local gui = Instance.new("ScreenGui",Background)
-local nextb = Instance.new("ImageButton", gui)
-local gui = Instance.new("UICorner", nextb)
 
 --Properties:
 
 SimpleSpy2.Name = "SimpleSpy2"
 SimpleSpy2.ResetOnSpawn = false
 
-local SpyFind = CoreGui:FindFirstChild(SimpleSpy2.Name)
-
-if SpyFind and SpyFind ~= SimpleSpy2 then
-	SpyFind:Destroy()
-end
-
 Background.Name = "Background"
 Background.Parent = SimpleSpy2
 Background.BackgroundColor3 = Color3.new(1, 1, 1)
 Background.BackgroundTransparency = 1
-Background.Position = UDim2.new(0, 160, 0, 100)
+Background.Position = UDim2.new(0, 500, 0, 200)
 Background.Size = UDim2.new(0, 450, 0, 268)
-Background.Active = true
-Background.Draggable = true
-
-nextb.Position = UDim2.new(0,100,0,60)
-nextb.Size = UDim2.new(0,40,0,40)
-nextb.BackgroundColor3 = Color3.fromRGB(53, 52, 55)
-nextb.Image = "rbxassetid://7072720870"
-nextb.Active = true
-nextb.Draggable = true
-nextb.MouseButton1Down:connect(function()
-	nextb.Image = (Background.Visible and "rbxassetid://7072720870") or "rbxassetid://7072719338"
-	Background.Visible = not Background.Visible
-end)
 
 LeftPanel.Name = "LeftPanel"
 LeftPanel.Parent = Background
@@ -239,8 +211,8 @@ Simple.BackgroundTransparency = 1
 Simple.Position = UDim2.new(0, 5, 0, 0)
 Simple.Size = UDim2.new(0, 57, 0, 18)
 Simple.Font = Enum.Font.SourceSansBold
-Simple.Text = "SimpleSpy For Mobile"
-Simple.TextColor3 = Color3.new(0, 0, 1)
+Simple.Text = "SimpleSpy"
+Simple.TextColor3 = Color3.new(1, 1, 1)
 Simple.TextSize = 14
 Simple.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -661,7 +633,7 @@ end
 --- Drags gui (so long as mouse is held down)
 --- @param input InputObject
 function onBarInput(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		local lastPos = UserInputService.GetMouseLocation(UserInputService)
 		local mainPos = Background.AbsolutePosition
 		local offset = mainPos - lastPos
@@ -879,6 +851,100 @@ function toggleMaximize()
 	end
 end
 
+--- Checks if cursor is within resize range
+--- @param p Vector2
+function isInResizeRange(p)
+	local relativeP = p - Background.AbsolutePosition
+	local range = 5
+	if
+		relativeP.X >= TopBar.AbsoluteSize.X - range
+		and relativeP.Y >= Background.AbsoluteSize.Y - range
+		and relativeP.X <= TopBar.AbsoluteSize.X
+		and relativeP.Y <= Background.AbsoluteSize.Y
+	then
+		return true, "B"
+	elseif relativeP.X >= TopBar.AbsoluteSize.X - range and relativeP.X <= Background.AbsoluteSize.X then
+		return true, "X"
+	elseif relativeP.Y >= Background.AbsoluteSize.Y - range and relativeP.Y <= Background.AbsoluteSize.Y then
+		return true, "Y"
+	end
+	return false
+end
+
+--- Checks if cursor is within dragging range
+--- @param p Vector2
+function isInDragRange(p)
+	local relativeP = p - Background.AbsolutePosition
+	if
+		relativeP.X <= TopBar.AbsoluteSize.X - CloseButton.AbsoluteSize.X * 3
+		and relativeP.X >= 0
+		and relativeP.Y <= TopBar.AbsoluteSize.Y
+		and relativeP.Y >= 0
+	then
+		return true
+	end
+	return false
+end
+
+--- Called when mouse enters SimpleSpy
+function mouseEntered()
+	local existingCursor = SimpleSpy2:FindFirstChild("Cursor")
+	while existingCursor do
+		existingCursor:Destroy()
+		existingCursor = SimpleSpy2:FindFirstChild("Cursor")
+	end
+	local customCursor = Instance.new("ImageLabel")
+	customCursor.Name = "Cursor"
+	customCursor.Size = UDim2.fromOffset(200, 200)
+	customCursor.ZIndex = 1e5
+	customCursor.BackgroundTransparency = 1
+	customCursor.Image = ""
+	customCursor.Parent = SimpleSpy2
+	UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceHide
+	RunService:BindToRenderStep("SIMPLESPY_CURSOR", 1, function()
+		if mouseInGui and _G.SimpleSpyExecuted then
+			local mouseLocation = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
+			customCursor.Position = UDim2.fromOffset(
+				mouseLocation.X - customCursor.AbsoluteSize.X / 2,
+				mouseLocation.Y - customCursor.AbsoluteSize.Y / 2
+			)
+			local inRange, type = isInResizeRange(mouseLocation)
+			if inRange and not sideClosed and not closed then
+				customCursor.Image = type == "B" and "rbxassetid://6065821980"
+					or type == "X" and "rbxassetid://6065821086"
+					or type == "Y" and "rbxassetid://6065821596"
+			elseif inRange and not closed and type == "Y" or type == "B" then
+				customCursor.Image = "rbxassetid://6065821596"
+			elseif customCursor.Image ~= "rbxassetid://6065775281" then
+				customCursor.Image = "rbxassetid://6065775281"
+			end
+		else
+			UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
+			customCursor:Destroy()
+			RunService:UnbindFromRenderStep("SIMPLESPY_CURSOR")
+		end
+	end)
+end
+
+--- Called when mouse moves
+function mouseMoved()
+	local mousePos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
+	if
+		not closed
+		and mousePos.X >= TopBar.AbsolutePosition.X
+		and mousePos.X <= TopBar.AbsolutePosition.X + TopBar.AbsoluteSize.X
+		and mousePos.Y >= Background.AbsolutePosition.Y
+		and mousePos.Y <= Background.AbsolutePosition.Y + Background.AbsoluteSize.Y
+	then
+		if not mouseInGui then
+			mouseInGui = true
+			mouseEntered()
+		end
+	else
+		mouseInGui = false
+	end
+end
+
 --- Adjusts the ui elements to the 'Maximized' size
 function maximizeSize(speed)
 	if not speed then
@@ -995,6 +1061,56 @@ function validateSize()
 		end
 	end
 	Background.Size = UDim2.fromOffset(x, y)
+end
+
+--- Called on user input while mouse in 'Background' frame
+--- @param input InputObject
+function backgroundUserInput(input)
+	local mousePos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
+	local inResizeRange, type = isInResizeRange(mousePos)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 and inResizeRange then
+		local lastPos = UserInputService:GetMouseLocation()
+		local offset = Background.AbsoluteSize - lastPos
+		local currentPos = lastPos + offset
+		RunService:BindToRenderStep("SIMPLESPY_RESIZE", 1, function()
+			local newPos = UserInputService:GetMouseLocation()
+			if newPos ~= lastPos then
+				local currentX = (newPos + offset).X
+				local currentY = (newPos + offset).Y
+				if currentX < 450 then
+					currentX = 450
+				end
+				if currentY < 268 then
+					currentY = 268
+				end
+				currentPos = Vector2.new(currentX, currentY)
+				Background.Size = UDim2.fromOffset(
+					(not sideClosed and not closed and (type == "X" or type == "B")) and currentPos.X
+						or Background.AbsoluteSize.X,
+					(--[[(not sideClosed or currentPos.X <= LeftPanel.AbsolutePosition.X + LeftPanel.AbsoluteSize.X) and]]not closed and (type == "Y" or type == "B"))
+						and currentPos.Y
+						or Background.AbsoluteSize.Y
+				)
+				validateSize()
+				if sideClosed then
+					minimizeSize()
+				else
+					maximizeSize()
+				end
+				lastPos = newPos
+			end
+		end)
+		table.insert(
+			connections,
+			UserInputService.InputEnded:Connect(function(inputE)
+				if input == inputE then
+					RunService:UnbindFromRenderStep("SIMPLESPY_RESIZE")
+				end
+			end)
+		)
+	elseif isInDragRange(mousePos) then
+		onBarInput(input)
+	end
 end
 
 --- Gets the player an instance is descended from
@@ -1208,7 +1324,7 @@ function genScript(remote, args)
 			gen = gen .. v2s(remote) .. ":InvokeServer()"
 		end
 	end
-	gen = gen
+	gen = "-- Script generated by SimpleSpy - credits to exx#9394\n\n" .. gen
 	prevTables = {}
 	return gen
 end
@@ -2047,15 +2163,15 @@ function toggleSpy()
 	if not toggle then
 		if hookmetamethod then
 			local oldNamecall = hookmetamethod(game, "__namecall", newnamecall)
-			original = original or function(...)
+			original = original or newcclosure(function(...)
 				return oldNamecall(...)
-			end
+			end)
 			_G.OriginalNamecall = original
 		else
 			gm = gm or getrawmetatable(game)
-			original = original or function(...)
+			original = original or newcclosure(function(...)
 				return gm.__namecall(...)
-			end
+			end)
 			setreadonly(gm, false)
 			if not original then
 				warn("SimpleSpy: namecall method not found!")
@@ -2180,6 +2296,7 @@ if not _G.SimpleSpyExecuted then
 		Simple.MouseEnter:Connect(onToggleButtonHover)
 		Simple.MouseLeave:Connect(onToggleButtonUnhover)
 		CloseButton.MouseButton1Click:Connect(shutdown)
+		table.insert(connections, UserInputService.InputBegan:Connect(backgroundUserInput))
 		connectResize()
 		SimpleSpy2.Enabled = true
 		coroutine.wrap(function()
@@ -2199,6 +2316,7 @@ if not _G.SimpleSpyExecuted then
 		end
 		Mouse = Players.LocalPlayer:GetMouse()
 		oldIcon = Mouse.Icon
+		table.insert(connections, Mouse.Move:Connect(mouseMoved))
 	end)
 	if not succeeded then
 		warn(
