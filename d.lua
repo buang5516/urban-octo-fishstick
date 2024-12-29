@@ -826,13 +826,6 @@ do
 		end
 	end
 
-  local visible = true
-  function Funcs:Visible(_state)
-    if self.section ~= nil then
-        self.section.Visible = _state or true
-    end
-  end
-
 	function Funcs:Dropdown(Settings)
 		Settings = Defaults({
 			Name = "Test Dropdown",
@@ -846,6 +839,7 @@ do
 		local DropdownFunctions = {}
 		local Selected = {}
 		local OptionObjs = {}
+		local _dropdown_callback = Settings.Callback
 
 		local section = self.section
 
@@ -1220,10 +1214,12 @@ do
 							for _, opt in ipairs(Selected) do
 								Return[opt] = true
 							end
-							Settings.Callback(Return)
+							_dropdown_callback(Return)
+							--Settings.Callback(Return)
 						else
 							if newSelected then
-								Settings.Callback(Selected[1] or nil)
+								_dropdown_callback(Selected[1] or nil)
+								--Settings.Callback(Selected[1] or nil)
 							end
 						end
 					end)
@@ -1285,6 +1281,12 @@ do
 
 		function DropdownFunctions:SetVisibility(State)
 			dropdown.Visible = State
+		end
+
+		function DropdownFunctions:SetCallback(Callback_Func)
+			if typeof(Callback_Func) == "function" then
+				_dropdown_callback = Callback_Func
+			end
 		end
 
 		function DropdownFunctions:SetDropdown(Selection)
