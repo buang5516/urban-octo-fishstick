@@ -827,10 +827,9 @@ do
 	end
 
   local visible = true
-  function Funcs:Visible()
+  function Funcs:Visible(_state)
     if self.section ~= nil then
-        visible = not visible
-        self.section.Visible = visible
+        self.section.Visible = _state or true
     end
   end
 
