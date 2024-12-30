@@ -85,7 +85,7 @@ do
 		buttonInteract.BorderSizePixel = 0
 		buttonInteract.Size = UDim2.fromScale(1, 1)
 		buttonInteract.Parent = button
-		buttonInteract.Text = Settings.Name
+		buttonInteract.Text = tostring(Settings.Name)
 
 		local buttonImage = Instance.new("ImageLabel")
 		buttonImage.Name = "ButtonImage"
@@ -134,7 +134,7 @@ do
 
 		buttonInteract.MouseButton1Click:Connect(Callback)
 		function ButtonFunctions:UpdateName(Name)
-			buttonInteract.Text = Name
+			buttonInteract.Text = tostring(Name)
 		end
 		return ButtonFunctions
 
@@ -164,7 +164,7 @@ do
 		local toggleName = Instance.new("TextLabel")
 		toggleName.Name = "ToggleName"
 		toggleName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
-		toggleName.Text = Settings.Name
+		toggleName.Text = tostring(Settings.Name)
 		toggleName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		toggleName.TextSize = 13
 		toggleName.TextTransparency = 0.5
@@ -274,7 +274,7 @@ do
 			return togglebool
 		end
 		function ToggleFunctions:UpdateName(Name)
-			toggleName.Text = Name
+			toggleName.Text = tostring(Name)
 		end
 
 		return ToggleFunctions
@@ -308,7 +308,7 @@ do
 		local sliderName = Instance.new("TextLabel")
 		sliderName.Name = "SliderName"
 		sliderName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
-		sliderName.Text = Settings.Name
+		sliderName.Text = tostring(Settings.Name)
 		sliderName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		sliderName.TextSize = 13
 		sliderName.TextTransparency = 0.5
@@ -454,7 +454,7 @@ do
 			sliderHead.Position = pos
 
 			finalValue = posXScale * (Settings.Maximum - Settings.Minimum) + Settings.Minimum
-			sliderValue.Text = ValueDisplayMethod(finalValue)
+			sliderValue.Text = tostring(ValueDisplayMethod(finalValue))
 
 			if not ignorecallback then
 				if Settings.Callback then
@@ -501,7 +501,7 @@ do
 				local newValue = math.clamp(value, Settings.Minimum, Settings.Maximum)
 				SetValue(newValue)
 			else
-				sliderValue.Text = ValueDisplayMethod(sliderValue)
+				sliderValue.Text = tostring(ValueDisplayMethod(sliderValue))
 			end
 		end)
 
@@ -563,7 +563,7 @@ do
 		local inputName = Instance.new("TextLabel")
 		inputName.Name = "InputName"
 		inputName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
-		inputName.Text = Settings.Name
+		inputName.Text = tostring(Settings.Name)
 		inputName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		inputName.TextSize = 13
 		inputName.TextTransparency = 0.5
@@ -662,20 +662,20 @@ do
 		InputBox.FocusLost:Connect(function()
 			local inputText = InputBox.Text
 			local filteredText = AcceptedCharacters(inputText)
-			InputBox.Text = filteredText
+			InputBox.Text = tostring(filteredText)
 			if Settings.Callback then
-				task.spawn(Settings.Callback, filteredText)
+				task.spawn(Settings.Callback, tostring(filteredText))
 			end
 		end)
-		InputBox.Text = Settings.Default or ""
+		InputBox.Text = tostring(Settings.Default) or ""
 		InputBox.PlaceholderText = Settings.Placeholder or ""
 
 		InputBox:GetPropertyChangedSignal("Text"):Connect(function()
-			InputBox.Text = AcceptedCharacters(InputBox.Text)
+			InputBox.Text = tostring(AcceptedCharacters(InputBox.Text))
 		end)
 
 		function InputFunctions:UpdateName(Name)
-			inputName.Text = Name
+			inputName.Text = tostring(Name)
 		end
 		function InputFunctions:GetInput()
 			return InputBox.Text
@@ -684,7 +684,7 @@ do
 			inputBox.PlaceholderText = Placeholder
 		end
 		function InputFunctions:UpdateText(Text)
-			inputBox.Text = Text
+			inputBox.Text = tostring(Text)
 		end
 		return InputFunctions
 
@@ -714,7 +714,7 @@ do
 		local keybindName = Instance.new("TextLabel")
 		keybindName.Name = "KeybindName"
 		keybindName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
-		keybindName.Text = Settings.Name
+		keybindName.Text = tostring(Settings.Name)
 		keybindName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		keybindName.TextSize = 13
 		keybindName.TextTransparency = 0.5
@@ -777,7 +777,7 @@ do
 		local focused
 		local binded = Settings.Default
 		if binded then
-			binderBox.Text = binded.Name
+			binderBox.Text = tostring(binded.Name)
 		end
 
 		binderBox.Focused:Connect(function()
@@ -791,7 +791,7 @@ do
 			if MacLib.macLib ~= nil then
 				if focused and inp.KeyCode.Name ~= "Unknown" then
 					binded = inp.KeyCode
-					binderBox.Text = inp.KeyCode.Name
+					binderBox.Text = tostring(inp.KeyCode.Name)
 					binderBox:ReleaseFocus()
 				elseif inp.KeyCode == binded then
 					if Settings.Callback then
@@ -802,7 +802,7 @@ do
 		end)
 		function KeybindFunctions:Bind(Key)
 			binded = Key
-			binderBox.Text = Key.Name
+			binderBox.Text = tostring(Key.Name)
 		end
 		function KeybindFunctions:Unbind()
 			binded = nil
@@ -817,7 +817,7 @@ do
 
 		return KeybindFunctions
 	end
-	
+
 	function Funcs:Destroy()
 		if self.section ~= nil then
 			pcall(function()
@@ -873,7 +873,7 @@ do
 			Enum.FontWeight.Medium,
 			Enum.FontStyle.Normal
 		)
-		dropdownName.Text = Settings.Name
+		dropdownName.Text = tostring(Settings.Name)
 		dropdownName.RichText = true
 		dropdownName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		dropdownName.TextSize = 13
@@ -938,9 +938,9 @@ do
 
 		local function ResetName()
 			if #Selected > 0 then
-				dropdownName.Text = Settings.Name .. " • " .. table.concat(Selected, ", ")
+				dropdownName.Text = tostring(Settings.Name) .. " • " .. table.concat(Selected, ", ")
 			else
-				dropdownName.Text = Settings.Name
+				dropdownName.Text = tostring(Settings.Name)
 			end
 		end
 
@@ -1115,7 +1115,7 @@ do
 					Enum.FontWeight.Medium,
 					Enum.FontStyle.Normal
 				)
-				optionName.Text = v
+				optionName.Text = tostring(v)
 				optionName.RichText = true
 				optionName.TextColor3 = Color3.fromRGB(255, 255, 255)
 				optionName.TextSize = 13
@@ -1279,7 +1279,7 @@ do
 		interact.MouseButton1Click:Connect(ToggleDropdown)
 
 		function DropdownFunctions:UpdateName(New)
-			dropdownName.Text = New
+			dropdownName.Text = tostring(New)
 		end
 
 		function DropdownFunctions:SetVisibility(State)
@@ -1373,7 +1373,7 @@ do
 			Enum.FontStyle.Normal
 		)
 		headerText.RichText = true
-		headerText.Text = Settings.Name
+		headerText.Text = tostring(Settings.Name)
 		headerText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		headerText.TextSize = 16
 		headerText.TextTransparency = 0.4
@@ -1388,7 +1388,7 @@ do
 		headerText.Parent = header
 
 		function HeaderFunctions:UpdateName(New)
-			headerText.Text = New
+			headerText.Text = tostring(New)
 		end
 
 		return HeaderFunctions
@@ -1421,7 +1421,7 @@ do
 			Enum.FontStyle.Normal
 		)
 		labelText.RichText = true
-		labelText.Text = Settings.Name
+		labelText.Text = tostring(Settings.Name)
 		labelText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		labelText.TextSize = 13
 		labelText.TextTransparency = 0.5
@@ -1436,7 +1436,7 @@ do
 		labelText.Parent = label
 
 		function LabelFunctions:UpdateName(New)
-			labelText.Text = New
+			labelText.Text = tostring(New)
 		end
 
 		return LabelFunctions
@@ -1475,7 +1475,7 @@ do
 			Enum.FontStyle.Normal
 		)
 		paragraphHeader.RichText = true
-		paragraphHeader.Text = Settings.Header
+		paragraphHeader.Text = tostring(Settings.Header)
 		paragraphHeader.TextColor3 = Color3.fromRGB(255, 255, 255)
 		paragraphHeader.TextSize = 16
 		paragraphHeader.TextTransparency = 0.4
@@ -1499,7 +1499,7 @@ do
 		paragraphBody.Name = "ParagraphBody"
 		paragraphBody.FontFace = Font.new("rbxassetid://12187365364")
 		paragraphBody.RichText = true
-		paragraphBody.Text = Settings.Body
+		paragraphBody.Text = tostring(Settings.Body)
 		paragraphBody.TextColor3 = Color3.fromRGB(255, 255, 255)
 		paragraphBody.TextSize = 13
 		paragraphBody.TextTransparency = 0.5
@@ -1515,10 +1515,10 @@ do
 		paragraphBody.Parent = paragraph
 
 		function ParagraphFunctions:UpdateHeader(New)
-			paragraphHeader.Text = New
+			paragraphHeader.Text = tostring(New)
 		end
 		function ParagraphFunctions:UpdateBody(New)
-			paragraphBody.Text = New
+			paragraphBody.Text = tostring(New)
 		end
 
 		return ParagraphFunctions
@@ -1613,7 +1613,7 @@ do
 		subLabelText.Name = "SubLabelText"
 		subLabelText.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
 		subLabelText.RichText = true
-		subLabelText.Text = Settings.Text or Settings.Name -- Settings.Name Deprecated
+		subLabelText.Text = tostring(Settings.Text) or tostring(Settings.Name) -- Settings.Name Deprecated
 		subLabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		subLabelText.TextSize = 11
 		subLabelText.TextTransparency = 0.7
@@ -1628,7 +1628,7 @@ do
 		subLabelText.Parent = subLabel
 
 		function SubLabelFunctions:UpdateName(New)
-			subLabelText.Text = New
+			subLabelText.Text = tostring(New)
 		end
 		function SubLabelFunctions:SetVisibility(State)
 			subLabel.Visible = State
@@ -1669,7 +1669,7 @@ do
 			Enum.FontWeight.Medium,
 			Enum.FontStyle.Normal
 		)
-		colorpickerName.Text = Settings.Name
+		colorpickerName.Text = tostring(Settings.Name)
 		colorpickerName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		colorpickerName.TextSize = 13
 		colorpickerName.TextTransparency = 0.5
@@ -2618,7 +2618,7 @@ do
 			Enum.FontStyle.Normal
 		)
 		paragraphHeader.RichText = true
-		paragraphHeader.Text = Settings.Name
+		paragraphHeader.Text = tostring(Settings.Name)
 		paragraphHeader.TextColor3 = Color3.fromRGB(255, 255, 255)
 		paragraphHeader.TextSize = 18
 		paragraphHeader.TextTransparency = 0.4
@@ -2869,7 +2869,7 @@ do
 		end)
 
 		local function onFocusEnter(instance)
-			local placeholder = instance.Text
+			local placeholder = tostring(instance.Text)
 			instance.Text = ""
 			instance.PlaceholderText = placeholder
 		end
@@ -2962,7 +2962,7 @@ do
 		updateFromSettings()
 
 		function ColorpickerFunctions:UpdateName(New)
-			colorpickerName.Text = New
+			colorpickerName.Text = tostring(New)
 		end
 		function ColorpickerFunctions:SetVisibility(State)
 			colorpicker.Visible = State
@@ -3080,7 +3080,7 @@ do
 		local tabSwitcherName = Instance.new("TextLabel")
 		tabSwitcherName.Name = "TabSwitcherName"
 		tabSwitcherName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.SemiBold,Enum.FontStyle.Normal)
-		tabSwitcherName.Text = Settings.Name
+		tabSwitcherName.Text = tostring(Settings.Name)
 		tabSwitcherName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		tabSwitcherName.TextSize = 16
 		tabSwitcherName.TextTransparency = 0.4
@@ -3203,7 +3203,7 @@ do
 
 			tabs[tabSwitcher].Parent = content
 			currentTabInstance = tabs[tabSwitcher]
-			currentTab.Text = Settings.Name
+			currentTab.Text = tostring(Settings.Name)
 
 			tabSwitcher.BackgroundTransparency = 0.98
 			tabSwitcherUIStroke.Transparency = 0.95
@@ -3630,7 +3630,7 @@ function MacLib:Window(Settings)
 	local title = Instance.new("TextLabel")
 	title.Name = "Title"
 	title.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.SemiBold,Enum.FontStyle.Normal)
-	title.Text = Settings.Title
+	title.Text = tostring(Settings.Title)
 	title.TextColor3 = Color3.fromRGB(255, 255, 255)
 	title.TextSize = 20
 	title.TextTransparency = 0.2
@@ -3649,7 +3649,7 @@ function MacLib:Window(Settings)
 	subtitle.Name = "Subtitle"
 	subtitle.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
 	subtitle.RichText = true
-	subtitle.Text = Settings.Subtitle or ''
+	subtitle.Text = tostring(Settings.Subtitle) or ''
 	subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 	subtitle.TextSize = 12
 	subtitle.TextTransparency = 0.8
@@ -3758,7 +3758,7 @@ function MacLib:Window(Settings)
 	local displayName = Instance.new("TextLabel")
 	displayName.Name = "DisplayName"
 	displayName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.SemiBold,Enum.FontStyle.Normal)
-	displayName.Text = LocalPlayer.DisplayName
+	displayName.Text = tostring(LocalPlayer.DisplayName)
 	displayName.TextColor3 = Color3.fromRGB(255, 255, 255)
 	displayName.TextSize = 13
 	displayName.TextTransparency = 0.2
@@ -3787,7 +3787,7 @@ function MacLib:Window(Settings)
 	local username = Instance.new("TextLabel")
 	username.Name = "Username"
 	username.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.SemiBold,Enum.FontStyle.Normal)
-	username.Text = "@"..LocalPlayer.Name
+	username.Text = "@"..tostring(LocalPlayer.Name)
 	username.TextColor3 = Color3.fromRGB(255, 255, 255)
 	username.TextSize = 12
 	username.TextTransparency = 0.8
@@ -4030,11 +4030,11 @@ function MacLib:Window(Settings)
 	end
 
 	function WindowFunctions:UpdateTitle(NewTitle)
-		title.Text = NewTitle
+		title.Text = tostring(NewTitle)
 	end
 
 	function WindowFunctions:UpdateSubtitle(NewSubtitle)
-		subtitle.Text = NewSubtitle
+		subtitle.Text = tostring(NewSubtitle)
 	end
 
 	local hovering
@@ -4087,7 +4087,7 @@ function MacLib:Window(Settings)
 		local settingName = Instance.new("TextLabel")
 		settingName.Name = "SettingName"
 		settingName.FontFace = Font.new("rbxassetid://12187365364",Enum.FontWeight.Medium,Enum.FontStyle.Normal)
-		settingName.Text = Settings.Name
+		settingName.Text = tostring(Settings.Name)
 		settingName.TextColor3 = Color3.fromRGB(255, 255, 255)
 		settingName.TextSize = 13
 		settingName.TextTransparency = 0.5
@@ -4177,7 +4177,7 @@ function MacLib:Window(Settings)
 		end)
 
 		function GlobalSettingFunctions:UpdateName(NewName)
-			settingName.Text = NewName
+			settingName.Text = tostring(NewName)
 		end
 
 		function GlobalSettingFunctions:UpdateState(NewState)
@@ -4241,7 +4241,7 @@ function MacLib:Window(Settings)
 				Enum.FontStyle.Normal
 			)
 			notificationTitle.RichText = true
-			notificationTitle.Text = Settings.Title
+			notificationTitle.Text = tostring(Settings.Title)
 			notificationTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 			notificationTitle.TextSize = 13
 			notificationTitle.TextTransparency = 0.2
@@ -4269,7 +4269,7 @@ function MacLib:Window(Settings)
 				Enum.FontWeight.Medium,
 				Enum.FontStyle.Normal
 			)
-			notificationDescription.Text = Settings.Description or ""
+			notificationDescription.Text = tostring(Settings.Description) or ""
 			notificationDescription.TextColor3 = Color3.fromRGB(255, 255, 255)
 			notificationDescription.TextSize = 11
 			notificationDescription.TextTransparency = 0.5
@@ -4368,11 +4368,11 @@ function MacLib:Window(Settings)
 			end)
 
 			function NotificationFunctions:UpdateTitle(New)
-				notificationTitle.Text = New
+				notificationTitle.Text = tostring(New)
 			end
 
 			function NotificationFunctions:UpdateDescription(New)
-				notificationDescription.Text = New
+				notificationDescription.Text = tostring(New)
 			end
 
 			function NotificationFunctions:Cancel()
@@ -4458,7 +4458,7 @@ function MacLib:Window(Settings)
 				Enum.FontStyle.Normal
 			)
 			paragraphHeader.RichText = true
-			paragraphHeader.Text = Settings.Title
+			paragraphHeader.Text = tostring(Settings.Title)
 			paragraphHeader.TextColor3 = Color3.fromRGB(255, 255, 255)
 			paragraphHeader.TextSize = 18
 			paragraphHeader.TextTransparency = 0.4
@@ -4485,7 +4485,7 @@ function MacLib:Window(Settings)
 				Enum.FontStyle.Normal
 			)
 			paragraphBody.RichText = true
-			paragraphBody.Text = Settings.Description
+			paragraphBody.Text = tostring(Settings.Description)
 			paragraphBody.TextColor3 = Color3.fromRGB(255, 255, 255)
 			paragraphBody.TextSize = 14
 			paragraphBody.TextTransparency = 0.5
@@ -4552,7 +4552,7 @@ function MacLib:Window(Settings)
 					Enum.FontWeight.SemiBold,
 					Enum.FontStyle.Normal
 				)
-				button.Text = v.Name
+				button.Text = tostring(v.Name)
 				button.TextColor3 = Color3.fromRGB(255, 255, 255)
 				button.TextSize = 15
 				button.TextTransparency = 0.5
@@ -4622,10 +4622,10 @@ function MacLib:Window(Settings)
 			dialogIn()
 
 			function DialogFunctions:UpdateTitle(New)
-				paragraphHeader.Text = New
+				paragraphHeader.Text = tostring(New)
 			end
 			function DialogFunctions:UpdateDescription(New)
-				paragraphBody.Text = New
+				paragraphBody.Text = tostring(New)
 			end
 
 			function DialogFunctions:Cancel()
@@ -4688,14 +4688,14 @@ function MacLib:Window(Settings)
 	local function _SetUserInfoState(State)
 		if State then
 			headshot.Image = (isReady and headshotImage) or "rbxassetid://0"
-			username.Text = "@"..LocalPlayer.Name
-			displayName.Text = LocalPlayer.DisplayName
+			username.Text = "@"..tostring(LocalPlayer.Name)
+			displayName.Text = tostring(LocalPlayer.DisplayName)
 		else
 			headshot.Image = "rbxassetid://18824089198"
 			local nameLength = #LocalPlayer.Name
 			local displayNameLength = #LocalPlayer.DisplayName
-			username.Text = "@"..string.rep(".", nameLength)
-			displayName.Text = string.rep(".", displayNameLength)
+			username.Text = tostring("@"..string.rep(".", nameLength))
+			displayName.Text = tostring(string.rep(".", displayNameLength))
 		end
 	end
 
