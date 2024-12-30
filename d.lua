@@ -1099,6 +1099,9 @@ do
 				option.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				option.BorderSizePixel = 0
 				option.Size = UDim2.new(1, 0, 0, 30)
+				if v == "" then
+					option.Visible = false
+				end
 
 				local optionUIPadding = Instance.new("UIPadding")
 				optionUIPadding.Name = "OptionUIPadding"
