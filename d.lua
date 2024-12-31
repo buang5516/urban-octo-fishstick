@@ -1311,11 +1311,12 @@ do
 
 		function DropdownFunctions:Set(Value)
 			if Settings.Multi then
-				assert(Value == 'table', '`Value` is not a table.')
-				for xz,zx in pairs(Value) do
-					if not table.find(Selected, zx) then
-						if OptionObjs[zx] then
-							OptionObjs[zx].Toggle()
+				if typeof(Value) == "table" then
+					for xz,zx in pairs(Value) do
+						if not table.find(Selected, zx) then
+							if OptionObjs[zx] then
+								OptionObjs[zx].Toggle()
+							end
 						end
 					end
 				end
