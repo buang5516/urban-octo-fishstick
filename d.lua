@@ -1254,7 +1254,7 @@ do
 			local calculationVals = {
 				[1] = dropdown.AbsoluteSize.Y,
 				[2] = dropdownFrameUIPadding.PaddingTop.Offset - dropdownFrameUIPadding.PaddingBottom.Offset,
-				[3] = 32 * count
+				[3] = 34 * count
 			}
 			return calculationVals[1] + calculationVals[2] + calculationVals[3]
 		end
