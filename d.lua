@@ -1221,7 +1221,9 @@ do
 							--Settings.Callback(Return)
 						else
 							if newSelected then
-								_dropdown_callback(Selected[1] or nil)
+								_dropdown_callback(Selected[1] or "")
+							else
+								_dropdown_callback("")
 								--Settings.Callback(Selected[1] or nil)
 							end
 						end
